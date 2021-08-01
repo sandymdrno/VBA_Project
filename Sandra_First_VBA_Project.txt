@@ -1,0 +1,96 @@
+Sub A():
+'Loop for all Worksheets
+For Each ws In Worksheets
+
+'Label Cells
+    ws.Range("I1") = "Ticker"
+    ws.Range("J1") = "Yearly Change"
+    ws.Range("K1") = "Percent Change"
+    ws.Range("L1") = "Total Stock Volume"
+    
+    'Set an initial varible for holding Tickers
+    Dim Ticker As String
+    
+    'Set initial varible for stock volume per ticker
+    Dim Ticker_Total As Double
+    Ticker_Total = 0
+    
+    'Keep track of opening price for a ticker
+    Dim opening_price As Double
+    opening_price = 0
+    
+     'Keep track of closing price for a ticker
+    Dim closing_price As Double
+    closing_price = 0
+    
+    'Variable for Yearly change
+    Dim yearly_change As Double
+    
+    ' Keep track of the location for each ticker in the summary table
+    Dim Summary_Table_Row As Double
+    Summary_Table_Row = 2
+    'Set an initial varible for Opening_Price
+    opening_price = ws.Cells(2, 3).Value
+    'Loop through open to close prices
+    For i = 2 To 70926
+    
+    'Add to the ticker total
+    Ticker_Total = Ticker_Total + ws.Cells(i, 7).Value
+    
+        'opening_price = Cells(2, 3).Value
+        'Set an intial varible for closing_price
+        
+        closing_price = ws.Cells(i, 6).Value
+        
+        'Check if we are still within the same Ticker, if we are not...
+        If ws.Cells(i + 1, 1).Value <> ws.Cells(i, 1).Value Then
+      
+        'Set an initial varible for total stock volume
+        Ticker = ws.Cells(i, 1).Value
+        
+        'Set an intial varible for closing_price
+        'closing_price = Cells(i, 6).Value
+        
+        'Print the ticker in the total stock volume
+        ws.Range("I" & Summary_Table_Row).Value = Ticker
+        
+        'Print the ticker total to the summary table
+        ws.Range("L" & Summary_Table_Row).Value = Ticker_Total
+        
+        'Print the ticker in the yearly change
+        ws.Range("J" & Summary_Table_Row).Value = closing_price - opening_price
+        yearly_change = closing_price - opening_price
+        
+        If (yearly_change >= 0) Then
+        ws.Range("J" & Summary_Table_Row).Interior.ColorIndex = 4
+        
+        Else
+        ws.Range("J" & Summary_Table_Row).Interior.ColorIndex = 3
+        
+        End If
+        
+        If (opening_price > 0) Then
+        
+        'Print the ticker total to the Percent Change
+        ws.Range("K" & Summary_Table_Row).Value = ((closing_price - opening_price) / opening_price) * 100
+        
+        End If
+        
+        'Update Opening_Price
+        opening_price = ws.Cells(i + 1, 3).Value
+        
+        'Add one to the summary table row
+        Summary_Table_Row = Summary_Table_Row + 1
+        
+        'Reset the Ticker Total
+        Ticker_Total = 0
+        
+        
+    
+    End If
+    
+Next i
+Next ws
+End Sub
+
+
